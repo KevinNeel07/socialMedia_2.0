@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/userProfile.css">
+    <title>Users</title>
+</head>
+
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+    }
+</style>
+
+<body>
+    <div class="userProfile">
+        <div class="header">
+            <a href="/user/<%=user_Owner.id %>/pendingRequests">Pending Requests</a>
+            <a href="/user/<%=user_Owner.id %>/friendList">Friend Lisst</a>
+        </div>
+
+        <div class="userProfile">
+
+        </div>
+
+        <div class="content">
+
+            <div class="userProfile">
+                <h1>
+                    <%= user_Owner.name%>
+                </h1>
+                <h1>
+                    <%= user_Owner.email%>
+                </h1>
+            </div>
+
+            <div class="cards">
+                <% usersDetails.forEach((user)=>{ %>
+                    <div class="card">
+
+                        <h1>
+                            <%= user.name%>
+                        </h1>
+                        <h1>
+                            <%= user.email%>
+                        </h1>
+
+                        <%if(user.friendList !='' || user.pendingRequest !='' || user.sendReq !='' ) {%>
+                            <%let frnd=user.friendList.find((ele)=> ele.id == user_Owner.id)%>
+
+                                <%let pendingReq=user.pendingRequest.find((ele)=> ele.id == user_Owner.id)%>
+
+                                    <%let sendReq=user.sendReq.find((ele)=> ele.id == user_Owner.id)%>
+
+                                        <%if(frnd){%>
+                                            <%let blockedUser=user_Owner.blockedId.find((ele)=> ele.id == user.id)%>
+                                                <%if(!blockedUser){ %>
+                                                    <form method="POST"
+                                                        action="/user/blockUser/<%=user_Owner.id%>/<%=user.id%>">
+                                                        <div class="card">
+                                                            <button>Block Frined</button>
+                                                        </div>
+                                                    </form>
+                                                    <%}else{ %>
+                                                        <form
+                                                            action="/user/unblockUser/<%=user_Owner.id %>/<%=user.id%>"
+                                                            method="post">
+                                                            <button>Unblock</button>
+                                                        </form>
+                                                        <% } %>
+                                                            <%}else if(pendingReq){%>
+                                                                <p>Pending req</p>
+                                                                <%}else if(sendReq){ %>
+                                                                    <form method="POST"
+                                                                        action="/user/acceptReq/<%=user_Owner.id%>/<%=user.id%>">
+                                                                        <div class="card">
+                                                                            <button>Accept Req</button>
+                                                                        </div>
+                                                                    </form>
+                                                                    <%}else{%>
+                                                                        <form method="POST"
+                                                                            action="/user/sendReq/<%=user_Owner.id%>/<%=user.id%>">
+                                                                            <div class="card">
+                                                                                <button>Add Friend</button>
+                                                                            </div>
+                                                                        </form>
+                                                                        <%}%>
+
+                                                                            <%}else{%>
+                                                                                <form method="POST"
+                                                                                    action="/user/sendReq/<%=user_Owner.id%>/<%=user.id%>">
+                                                                                    <div class="card">
+                                                                                        <button>Add Friend</button>
+                                                                                    </div>
+                                                                                </form>
+                                                                                <%}%>
+                    </div>
+                    <%})%>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
